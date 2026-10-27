@@ -1,9 +1,9 @@
-# PVP Balance — Create Compatibility
+# MiniGamePlayground — Create Compatibility
 
-PVP Balance 的 Create 兼容附属模组，为核心模组的 PVP 区域提供 Contraption 防复制保护。
+MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区域提供 Contraption 防复制保护。
 
 - 服务端模组，客户端不需要安装。
-- 依赖核心模组 `pvpbalance` 1.9.0+。
+- 依赖核心模组 `minigameplayground` 2.0.0+。
 - 依赖 Create 6.0.8+。
 - 不添加指令、方块、物品或配置；区域数据全部来自核心模组。
 
@@ -15,14 +15,14 @@ PVP Balance 的 Create 兼容附属模组，为核心模组的 PVP 区域提供 
 | Fabric Loader | 0.18.4 |
 | Fabric API | 0.92.6+1.20.1 |
 | Java | 17+ |
-| PVP Balance Core | 1.9.0+ |
+| MiniGamePlayground Core | 2.0.0+ |
 | Create | 6.0.8+ |
 | WorldEdit | 核心模组要求，7.2.15+ |
 
 ## 安装
 
-1. 安装核心模组 `pvpbalance-1.9.0.jar`。
-2. 安装本附属模组 `pvpbalance-create-1.0.0.jar`。
+1. 安装核心模组 `minigameplayground-2.0.0.jar`。
+2. 安装本附属模组 `minigameplayground-create-1.0.0.jar`。
 3. 服务端安装 Create 6.0.8+。
 4. 启动服务器。
 
@@ -50,11 +50,14 @@ Create 的所有组装路径最终都会调用 `Contraption.removeBlocksFromWorl
 保护字段写入 Contraption NBT：
 
 ```text
-PvpBalanceProtected
-PvpBalanceMultiZone
-PvpBalanceZone
-PvpBalanceLocalBounds
+MiniGamePlaygroundProtected
+MiniGamePlaygroundMultiZone
+MiniGamePlaygroundZone
+MiniGamePlaygroundLocalBounds
 ```
+
+升级兼容：如果读取到旧版 `PvpBalanceProtected` 等 NBT 字段，会按旧字段恢复保护；
+新写入统一使用 `MiniGamePlayground*` 字段。
 
 `MountedContraption.writeNBT/readNBT` 会调用父类，因此矿车 Contraption 被拆成
 `MinecartContraptionItem` 后，保护标记会随物品 NBT 保留。
@@ -104,34 +107,34 @@ PvpBalanceLocalBounds
 - 不覆盖其他模组自己的方块搬运/采掘系统。
 - 未带保护标记的旧 Contraption 物品按未保护处理，不会误删升级前的结构。
 - 使用 AABB 判断，旋转/镜像后的包围盒可能比实际方块范围更保守；靠近区域边缘时可能被判定为越界。
-- `/pvb reset` 是恢复手段，不是防复制手段。
+- `/mgp reset` 是恢复手段，不是防复制手段。
 
 ## 构建
 
 先构建核心模组：
 
 ```bash
-cd ../pvpbalance-core
+cd ../minigameplayground-core
 ./gradlew build
 ```
 
 再构建本附属模组：
 
 ```bash
-cd ../pvpbalance-create
+cd ../minigameplayground-create
 ./gradlew build
 ```
 
 产物：
 
 ```text
-build/libs/pvpbalance-create-1.0.0.jar
+build/libs/minigameplayground-create-1.0.0.jar
 ```
 
 本附属模组的编译依赖：
 
 - 核心模组的开发 jar：
-  `../pvpbalance-core/build/devlibs/pvpbalance-1.9.0-dev.jar`
+  `../minigameplayground-core/build/devlibs/minigameplayground-2.0.0-dev.jar`
 - 本机 Maven 仓库中的 Create 开发包：
   `com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1`
 

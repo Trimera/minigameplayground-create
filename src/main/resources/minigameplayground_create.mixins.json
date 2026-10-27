@@ -1,9 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.pvpbalance.create.mixin",
+  "package": "com.minigameplayground.create.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "pvpbalance_create.refmap.json",
+  "refmap": "minigameplayground_create.refmap.json",
   "mixins": [
     "ContraptionMixin",
     "AbstractContraptionEntityMixin"

@@ -1,9 +1,9 @@
-package com.pvpbalance.create.mixin;
+package com.minigameplayground.create.mixin;
 
-import com.pvpbalance.create.PvpBalanceCreateMod;
-import com.pvpbalance.create.compat.ProtectedContraption;
-import com.pvpbalance.zone.PvpZone;
-import com.pvpbalance.zone.ZoneManager;
+import com.minigameplayground.create.MiniGamePlaygroundCreateMod;
+import com.minigameplayground.create.compat.ProtectedContraption;
+import com.minigameplayground.zone.PlaygroundZone;
+import com.minigameplayground.zone.ZoneManager;
 import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import net.minecraft.world.entity.Entity;
@@ -29,7 +29,7 @@ public abstract class AbstractContraptionEntityMixin {
     protected Contraption contraption;
 
     @Inject(method = "remove", at = @At("HEAD"))
-    private void pvpbalance$clearProtectedEntityRemovedOutsideZone(RemovalReason reason, CallbackInfo ci) {
+    private void minigameplayground$clearProtectedEntityRemovedOutsideZone(RemovalReason reason, CallbackInfo ci) {
         if (reason == RemovalReason.UNLOADED_TO_CHUNK
                 || reason == RemovalReason.UNLOADED_WITH_PLAYER
                 || reason == RemovalReason.CHANGED_DIMENSION) {
@@ -46,16 +46,16 @@ public abstract class AbstractContraptionEntityMixin {
         }
 
         ProtectedContraption protection = (ProtectedContraption) (Object) this.contraption;
-        if (!protection.pvpbalance$isProtected()) {
+        if (!protection.minigameplayground$isProtected()) {
             return;
         }
 
         String reasonText = null;
-        if (protection.pvpbalance$isMultiZone()) {
+        if (protection.minigameplayground$isMultiZone()) {
             reasonText = "entity removed while contraption touched multiple zones";
         } else {
-            String zoneId = protection.pvpbalance$getZoneId();
-            PvpZone zone = zoneId == null ? null : ZoneManager.getZone(zoneId);
+            String zoneId = protection.minigameplayground$getZoneId();
+            PlaygroundZone zone = zoneId == null ? null : ZoneManager.getZone(zoneId);
             if (zone == null) {
                 reasonText = "entity removed and its zone no longer exists";
             } else if (!zone.isDimension(level)) {
@@ -69,9 +69,9 @@ public abstract class AbstractContraptionEntityMixin {
             return;
         }
 
-        protection.pvpbalance$clearContents();
+        protection.minigameplayground$clearContents();
         this.contraption.disassembled = true;
-        PvpBalanceCreateMod.LOGGER.warn(
+        MiniGamePlaygroundCreateMod.LOGGER.warn(
                 "Cleared protected Create contraption entity at {}: {}",
                 self.position(), reasonText);
     }

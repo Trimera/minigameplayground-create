@@ -27,9 +27,9 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// Built by the sibling pvpbalance-core project. Runtime is provided by the
+	// Built by the sibling minigameplayground-core project. Runtime is provided by the
 	// separately installed core mod.
-	compileOnly files("../pvpbalance-core/build/devlibs/pvpbalance-${project.core_version}-dev.jar")
+	compileOnly files("../minigameplayground-core/build/devlibs/minigameplayground-${project.core_version}-dev.jar")
 
 	// Create is a required runtime dependency; it is not bundled.
 	modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
@@ -55,7 +55,7 @@ java {
 
 loom {
 	mixin {
-		defaultRefmapName = 'pvpbalance_create.refmap.json'
+		defaultRefmapName = 'minigameplayground_create.refmap.json'
 	}
 }
 

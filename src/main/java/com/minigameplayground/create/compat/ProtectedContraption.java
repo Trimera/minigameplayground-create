@@ -1,4 +1,4 @@
-package com.pvpbalance.create.compat;
+package com.minigameplayground.create.compat;
 
 import net.minecraft.world.phys.AABB;
 
@@ -10,19 +10,19 @@ import org.jetbrains.annotations.Nullable;
  * survives both entity serialization and minecart-contraption item round trips.
  */
 public interface ProtectedContraption {
-    boolean pvpbalance$isProtected();
+    boolean minigameplayground$isProtected();
 
-    boolean pvpbalance$isMultiZone();
-
-    @Nullable
-    String pvpbalance$getZoneId();
+    boolean minigameplayground$isMultiZone();
 
     @Nullable
-    AABB pvpbalance$getLocalBounds();
+    String minigameplayground$getZoneId();
+
+    @Nullable
+    AABB minigameplayground$getLocalBounds();
 
     /**
      * Removes the contraption's block map and mounted item inventories without
      * placing any blocks or creating drops.
      */
-    void pvpbalance$clearContents();
+    void minigameplayground$clearContents();
 }

@@ -1,15 +1,15 @@
-# PVP Balance Create Compatibility — 使用与实现说明
+# MiniGamePlayground Create Compatibility — 使用与实现说明
 
 ## 定位
 
-本目录是 `pvpbalance` 的独立附属模组，只负责 Create Contraption 防复制。
+本目录是 `minigameplayground` 的独立附属模组，只负责 Create Contraption 防复制。
 核心区域的创建、快照、伤害/恢复、耐久保护和原版活塞保护仍在核心模组中。
 
 分家后的依赖关系：
 
 ```text
-pvpbalance-create
-  -> pvpbalance (core)
+minigameplayground-create
+  -> minigameplayground (core)
   -> create
   -> fabric-api / fabric-loader
 ```
@@ -20,12 +20,12 @@ pvpbalance-create
 
 服务端需要：
 
-- `pvpbalance-1.9.0.jar`
-- `pvpbalance-create-1.0.0.jar`
+- `minigameplayground-2.0.0.jar`
+- `minigameplayground-create-1.0.0.jar`
 - Create 6.0.8+
 - 核心模组要求的 Fabric API、Fabric Loader、WorldEdit
 
-客户端不需要安装两个 PVP Balance 模组；Create 客户端是否安装取决于服务器/整合包配置，
+客户端不需要安装两个 MiniGamePlayground 模组；Create 客户端是否安装取决于服务器/整合包配置，
 但本附属模组是服务端逻辑。
 
 ## 实现
@@ -47,10 +47,13 @@ intersecting = ZoneManager.getZonesIntersecting(world, worldBounds)
 
 | NBT 字段 | 含义 |
 | --- | --- |
-| `PvpBalanceProtected` | 是否受保护 |
-| `PvpBalanceMultiZone` | 是否与多个区域相交 |
-| `PvpBalanceZone` | 单区域时的区域 ID |
-| `PvpBalanceLocalBounds` | 组装时局部 AABB，6 个 double |
+| `MiniGamePlaygroundProtected` | 是否受保护 |
+| `MiniGamePlaygroundMultiZone` | 是否与多个区域相交 |
+| `MiniGamePlaygroundZone` | 单区域时的区域 ID |
+| `MiniGamePlaygroundLocalBounds` | 组装时局部 AABB，6 个 double |
+
+旧版 `PvpBalanceProtected`、`PvpBalanceMultiZone`、`PvpBalanceZone`、
+`PvpBalanceLocalBounds` 会被读取作为兼容回退；新写入使用 `MiniGamePlayground*` 字段。
 
 `writeNBT` 在 RETURN 阶段追加字段；`readNBT` 在 RETURN 阶段恢复字段。
 矿车 Contraption 的 `MountedContraption` 调用父类方法，因此自动继承。
@@ -70,7 +73,7 @@ intersecting = ZoneManager.getZonesIntersecting(world, worldBounds)
 7. 最终世界 AABB 不完全在区域方块边界内：清除；
 8. 否则允许原版放置流程。
 
-区域边界使用核心模组的 `PvpZone.fullyContainsBlockBounds`，区域最大坐标按包含方块处理，
+区域边界使用核心模组的 `PlaygroundZone.fullyContainsBlockBounds`，区域最大坐标按包含方块处理，
 因此最大边会加 1 个方块单位。
 
 ### 3. 清除
@@ -78,7 +81,7 @@ intersecting = ZoneManager.getZonesIntersecting(world, worldBounds)
 `ProtectedContraption` 接口由 `ContraptionMixin` 实现，提供：
 
 ```java
-void pvpbalance$clearContents();
+void minigameplayground$clearContents();
 ```
 
 清除包括：
@@ -104,28 +107,28 @@ void pvpbalance$clearContents();
 - 使用局部 AABB，旋转/镜像后可能偏保守。
 - 旧版 Contraption 物品没有保护字段，按未保护处理。
 - 本模组不提供独立指令和配置，所有区域信息来自核心模组。
-- `/pvb reset` 不负责阻止复制。
+- `/mgp reset` 不负责阻止复制。
 
 ## 构建顺序
 
 核心模组必须先构建，生成供本模组编译使用的开发 jar：
 
 ```bash
-cd ../pvpbalance-core
+cd ../minigameplayground-core
 ./gradlew build
 ```
 
 然后：
 
 ```bash
-cd ../pvpbalance-create
+cd ../minigameplayground-create
 ./gradlew build
 ```
 
 `build.gradle` 使用：
 
 ```groovy
-compileOnly files("../pvpbalance-core/build/devlibs/pvpbalance-${project.core_version}-dev.jar")
+compileOnly files("../minigameplayground-core/build/devlibs/minigameplayground-${project.core_version}-dev.jar")
 modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
 ```
 
