@@ -1,0 +1,66 @@
+plugins {
+	id 'fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+	maven { url = 'https://maven.createmod.net' }
+	maven { url = 'https://mvn.devos.one/releases' }
+	maven { url = 'https://mvn.devos.one/snapshots' }
+	maven { url = 'https://raw.githubusercontent.com/Fuzss/modresources/main/maven' }
+	maven { url = 'https://maven.jamieswhiteshirt.com/libs-release' }
+	maven { url = 'https://maven.tterrag.com/' }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Built by the sibling pvpbalance-core project. Runtime is provided by the
+	// separately installed core mod.
+	compileOnly files("../pvpbalance-core/build/devlibs/pvpbalance-${project.core_version}-dev.jar")
+
+	// Create is a required runtime dependency; it is not bundled.
+	modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
+}
+
+processResources {
+	inputs.property 'version', project.version
+	filesMatching('fabric.mod.json') {
+		expand 'version': project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.release = 17
+	options.encoding = 'UTF-8'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+	withSourcesJar()
+}
+
+loom {
+	mixin {
+		defaultRefmapName = 'pvpbalance_create.refmap.json'
+	}
+}
+
+jar {
+	from('LICENSE') {
+		rename { "${it}_${project.base.archivesName.get()}" }
+	}
+}

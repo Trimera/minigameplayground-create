@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "pvpbalance-create",
+  "version": "${version}",
+  "name": "PVP Balance — Create Compatibility",
+  "description": "Create contraption anti-duplication protection for PVP Balance zones.",
+  "authors": [
+    "pvpbalance"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.pvpbalance.create.PvpBalanceCreateMod"
+    ]
+  },
+  "mixins": [
+    "pvpbalance_create.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric-api": ">=0.92.0",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "pvpbalance": ">=1.9.0",
+    "create": ">=6.0.8"
+  }
+}
