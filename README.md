@@ -23,8 +23,9 @@ MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区�
 
 1. 安装核心模组 `minigameplayground-2.0.0.jar`。
 2. 安装本附属模组 `minigameplayground-create-1.0.0.jar`。
-3. 服务端安装 Create 6.0.8+。
-4. 启动服务器。
+3. 从旧版升级时，先移除旧的 `pvpbalance-create-*.jar`。
+4. 服务端安装 Create 6.0.8+。
+5. 启动服务器。
 
 核心模组仍然负责区域创建、快照、伤害/恢复和原版活塞保护；本模组只在创建
 Contraption 时读取核心模组的区域数据。
