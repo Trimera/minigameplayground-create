@@ -2,8 +2,8 @@
 
 ## 定位
 
-本目录是 `minigameplayground` 的独立附属模组，只负责 Create Contraption 防复制。
-核心区域的创建、快照、伤害/恢复、耐久保护和原版活塞保护仍在核心模组中。
+本目录是 `minigameplayground` 的独立附属模组，负责 Create Contraption 防复制和 Create 实体快照。
+核心区域的创建、方块快照、伤害/恢复、耐久保护和原版活塞保护仍在核心模组中。
 
 分家后的依赖关系：
 
@@ -20,8 +20,8 @@ minigameplayground-create
 
 服务端需要：
 
-- `minigameplayground-2.0.1.jar`
-- `minigameplayground-create-1.1.0.jar`
+- `minigameplayground-2.2.0.jar`
+- `minigameplayground-create-1.3.0.jar`
 - Create 6.0.8+
 - 核心模组要求的 Fabric API、Fabric Loader、WorldEdit
 
@@ -104,7 +104,25 @@ void minigameplayground$clearContents();
 
 这修复了 `/mgp reset` 后传送带停止、创造电机应力输出不再转动的问题。
 
-### 5. 实体销毁保护
+### 5. Create 实体快照
+
+附属在初始化时调用：
+
+```java
+ZoneSnapshots.registerExtension(new CreateSnapshotExtension());
+```
+
+扩展 ID 为 `create`，由核心写入 `.entities-create.nbt`：
+
+- `handlesEntity` 判断实体类名是否以 `com.simibubi.create.` 开头；
+- `saveEntities` 调用核心的 `snapshotEntityNbt`，只保存根实体；
+- `clearEntities` 调用核心的 `clearEntities`，由核心先让玩家下坐骑再删除实体；
+- 核心跳过所有 Create 实体，因此不会重复保存；
+- 恢复使用核心的通用实体 NBT 加载逻辑，不把 Create 类型硬编码进核心；
+- 玩家永远不写入快照；载具上的玩家乘客由核心统一剥离，保存为空载具；
+- 没有实体文件的旧快照仍按旧行为只恢复方块。
+
+### 6. 实体销毁保护
 
 `AbstractContraptionEntityMixin` 注入 `Entity.remove(RemovalReason)`：
 
@@ -118,6 +136,7 @@ void minigameplayground$clearContents();
 - 使用局部 AABB，旋转/镜像后可能偏保守。
 - 旧版 Contraption 物品没有保护字段，按未保护处理。
 - 本模组不提供独立指令和配置，所有区域信息来自核心模组。
+- Create 实体快照依赖核心 2.2.0+ 的 `ZoneSnapshotExtension` API。
 - `/mgp reset` 不负责阻止复制。
 
 ## 构建顺序
@@ -152,3 +171,4 @@ modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
 - 区域外实体销毁：清空 Contraption。
 - 含创造电机、传动杆、齿轮的区域快照在 `/mgp reset` 后保持转速 16、Source 和 Network 数据。
 - 核心与附属模组同时安装时服务端正常启动。
+- 实体快照扩展已注册；普通实体和玩家乘客安全逻辑由核心测试覆盖。

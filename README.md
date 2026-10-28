@@ -1,9 +1,9 @@
 # MiniGamePlayground — Create Compatibility
 
-MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区域提供 Contraption 防复制保护。
+MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区域提供 Contraption 防复制保护和 Create 实体快照支持。
 
 - 服务端模组，客户端不需要安装。
-- 依赖核心模组 `minigameplayground` 2.0.1+。
+- 依赖核心模组 `minigameplayground` 2.2.0+。
 - 依赖 Create 6.0.8+。
 - 不添加指令、方块、物品或配置；区域数据全部来自核心模组。
 
@@ -15,20 +15,20 @@ MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区�
 | Fabric Loader | 0.18.4 |
 | Fabric API | 0.92.6+1.20.1 |
 | Java | 17+ |
-| MiniGamePlayground Core | 2.0.1+ |
+| MiniGamePlayground Core | 2.2.0+ |
 | Create | 6.0.8+ |
 | WorldEdit | 核心模组要求，7.2.15+ |
 
 ## 安装
 
-1. 安装核心模组 `minigameplayground-2.0.1.jar`。
-2. 安装本附属模组 `minigameplayground-create-1.1.0.jar`。
+1. 安装核心模组 `minigameplayground-2.2.0.jar`。
+2. 安装本附属模组 `minigameplayground-create-1.3.0.jar`。
 3. 从旧版升级时，先移除旧的 `pvpbalance-create-*.jar`。
 4. 服务端安装 Create 6.0.8+。
 5. 启动服务器。
 
-核心模组仍然负责区域创建、快照、伤害/恢复和原版活塞保护；本模组只在创建
-Contraption 时读取核心模组的区域数据。
+核心模组仍然负责区域创建、方块快照、伤害/恢复和原版活塞保护；本模组在创建
+Contraption 时读取核心模组的区域数据，并向核心注册 Create 实体快照扩展。
 
 ## 保护规则
 
@@ -97,6 +97,22 @@ Create 的 `KineticBlock.updateIndirectNeighbourShapes` 会在方块放置时调
 在 `KineticBlockMixin` 中跳过这次破坏性的动能清理，让快照中的
 `Speed`、`Source` 和 `Network` NBT 正常写回。恢复后传动方向、转速和应力状态保留。
 
+### Create 实体快照
+
+本附属向核心注册 `ZoneSnapshotExtension`（ID：`create`），因此核心不需要在编译期或
+运行期直接依赖 Create：
+
+- 核心保存普通实体，并跳过所有 Create 实体；
+- 附属保存 `com.simibubi.create.*` 实体，包括 Controlled/Oriented Contraption、
+  Minecart Contraption、Super Glue 等；
+- 实体 NBT 写入快照目录的 `.entities-create.nbt` 文件；
+- 恢复由核心统一调用 `EntityType.loadEntityRecursive` 完成；
+- 核心在保存前统一剥离玩家乘客，在重置清空实体前统一让玩家下坐骑，附属不单独处理玩家；
+- 没有实体文件的旧快照仍按旧行为只恢复方块。
+
+快照格式与核心实体快照一致：包含版本号和根实体 NBT 列表，乘客 NBT 随根实体保存，
+但玩家乘客会被剥离，因此载具保存为空载具。
+
 ### 实体销毁
 
 受保护 Contraption 实体如果在区域外被直接销毁（例如矿车 Contraption），
@@ -139,13 +155,13 @@ cd ../minigameplayground-create
 产物：
 
 ```text
-build/libs/minigameplayground-create-1.1.0.jar
+build/libs/minigameplayground-create-1.3.0.jar
 ```
 
 本附属模组的编译依赖：
 
 - 核心模组的开发 jar：
-  `../minigameplayground-core/build/devlibs/minigameplayground-2.0.1-dev.jar`
+  `../minigameplayground-core/build/devlibs/minigameplayground-2.2.0-dev.jar`
 - 本机 Maven 仓库中的 Create 开发包：
   `com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1`
 
