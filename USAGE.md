@@ -20,8 +20,8 @@ minigameplayground-create
 
 服务端需要：
 
-- `minigameplayground-2.0.0.jar`
-- `minigameplayground-create-1.0.0.jar`
+- `minigameplayground-2.0.1.jar`
+- `minigameplayground-create-1.1.0.jar`
 - Create 6.0.8+
 - 核心模组要求的 Fabric API、Fabric Loader、WorldEdit
 
