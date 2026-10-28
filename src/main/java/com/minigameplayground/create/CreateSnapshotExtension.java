@@ -33,4 +33,9 @@ public final class CreateSnapshotExtension implements ZoneSnapshotExtension {
     public void clearEntities(ServerLevel level, PlaygroundZone zone) {
         ZoneSnapshots.clearEntities(level, zone, this::handlesEntity);
     }
+
+    @Override
+    public void afterRestore(ServerLevel level, PlaygroundZone zone) {
+        KineticRestore.rebuild(level, zone);
+    }
 }

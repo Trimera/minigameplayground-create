@@ -20,8 +20,8 @@ minigameplayground-create
 
 服务端需要：
 
-- `minigameplayground-2.2.0.jar`
-- `minigameplayground-create-1.3.0.jar`
+- `minigameplayground-2.2.1.jar`
+- `minigameplayground-create-1.3.1.jar`
 - Create 6.0.8+
 - 核心模组要求的 Fabric API、Fabric Loader、WorldEdit
 
@@ -104,6 +104,11 @@ void minigameplayground$clearContents();
 
 这修复了 `/mgp reset` 后传送带停止、创造电机应力输出不再转动的问题。
 
+恢复期间 `KineticBlockEntityMixin` 还会防止 Create 的临时 `wasMoved` 标记跳过
+`Speed`/`Source`/`Network` NBT。`KineticRestore` 在方块恢复完成后重新把每个动能
+方块注册进内存中的 `KineticNetwork`，重新计算应力/容量并刷新网络，避免只恢复部分
+方块的转速而导致同一传动网络中的组件停止。
+
 ### 5. Create 实体快照
 
 附属在初始化时调用：
@@ -136,7 +141,7 @@ ZoneSnapshots.registerExtension(new CreateSnapshotExtension());
 - 使用局部 AABB，旋转/镜像后可能偏保守。
 - 旧版 Contraption 物品没有保护字段，按未保护处理。
 - 本模组不提供独立指令和配置，所有区域信息来自核心模组。
-- Create 实体快照依赖核心 2.2.0+ 的 `ZoneSnapshotExtension` API。
+- Create 实体快照依赖核心 2.2.1+ 的 `ZoneSnapshotExtension` API。
 - `/mgp reset` 不负责阻止复制。
 
 ## 构建顺序
@@ -169,6 +174,6 @@ modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
 - 区域内拆卸：正常放置。
 - 多区域相交：无条件清除。
 - 区域外实体销毁：清空 Contraption。
-- 含创造电机、传动杆、齿轮的区域快照在 `/mgp reset` 后保持转速 16、Source 和 Network 数据。
+- 含创造电机、传动杆、齿轮、飞轮的区域快照在 `/mgp reset` 后保持转速 16、Source 和 Network 数据。
 - 核心与附属模组同时安装时服务端正常启动。
 - 实体快照扩展已注册；普通实体和玩家乘客安全逻辑由核心测试覆盖。

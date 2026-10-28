@@ -3,7 +3,7 @@
 MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区域提供 Contraption 防复制保护和 Create 实体快照支持。
 
 - 服务端模组，客户端不需要安装。
-- 依赖核心模组 `minigameplayground` 2.2.0+。
+- 依赖核心模组 `minigameplayground` 2.2.1+。
 - 依赖 Create 6.0.8+。
 - 不添加指令、方块、物品或配置；区域数据全部来自核心模组。
 
@@ -15,14 +15,14 @@ MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区�
 | Fabric Loader | 0.18.4 |
 | Fabric API | 0.92.6+1.20.1 |
 | Java | 17+ |
-| MiniGamePlayground Core | 2.2.0+ |
+| MiniGamePlayground Core | 2.2.1+ |
 | Create | 6.0.8+ |
 | WorldEdit | 核心模组要求，7.2.15+ |
 
 ## 安装
 
-1. 安装核心模组 `minigameplayground-2.2.0.jar`。
-2. 安装本附属模组 `minigameplayground-create-1.3.0.jar`。
+1. 安装核心模组 `minigameplayground-2.2.1.jar`。
+2. 安装本附属模组 `minigameplayground-create-1.3.1.jar`。
 3. 从旧版升级时，先移除旧的 `pvpbalance-create-*.jar`。
 4. 服务端安装 Create 6.0.8+。
 5. 启动服务器。
@@ -97,6 +97,11 @@ Create 的 `KineticBlock.updateIndirectNeighbourShapes` 会在方块放置时调
 在 `KineticBlockMixin` 中跳过这次破坏性的动能清理，让快照中的
 `Speed`、`Source` 和 `Network` NBT 正常写回。恢复后传动方向、转速和应力状态保留。
 
+此外，`KineticBlockEntityMixin` 会防止 Create 的临时 `wasMoved` 标记导致
+`KineticBlockEntity.read()` 跳过动能 NBT；恢复结束后，`KineticRestore` 会重新把
+方块注册到内存中的 `KineticNetwork`，并刷新应力/容量和客户端数据。这样不会只恢复
+单个方块的 `Speed`，而是恢复整条传动网络的运行状态。
+
 ### Create 实体快照
 
 本附属向核心注册 `ZoneSnapshotExtension`（ID：`create`），因此核心不需要在编译期或
@@ -155,13 +160,13 @@ cd ../minigameplayground-create
 产物：
 
 ```text
-build/libs/minigameplayground-create-1.3.0.jar
+build/libs/minigameplayground-create-1.3.1.jar
 ```
 
 本附属模组的编译依赖：
 
 - 核心模组的开发 jar：
-  `../minigameplayground-core/build/devlibs/minigameplayground-2.2.0-dev.jar`
+  `../minigameplayground-core/build/devlibs/minigameplayground-2.2.1-dev.jar`
 - 本机 Maven 仓库中的 Create 开发包：
   `com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1`
 
@@ -176,5 +181,5 @@ build/libs/minigameplayground-create-1.3.0.jar
 - 受保护 Contraption 在区域内拆卸时正常放置。
 - 与多个区域相交的 Contraption，即使最终位置在其中一个区域内，拆卸时仍整体清除。
 - 区域外直接销毁受保护 Contraption 实体时，方块被清空。
-- 含创造电机、传动杆、齿轮的区域快照在 `/mgp reset` 后保持 `Speed=16`、`Source` 和 `Network`，传送带不再停转。
+- 含创造电机、传动杆、齿轮、飞轮的区域快照在 `/mgp reset` 后保持 `Speed=16`、`Source` 和 `Network`；重置后的网络 Size、Capacity 和应力状态正确。
 - 核心模组单独安装时不加载 Create Mixin；两个模组同时安装时正常启动。
