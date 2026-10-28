@@ -53,7 +53,6 @@ final class KineticRestore {
                 kinetic.setNetwork(savedNetwork);
             }
             kinetic.networkDirty = true;
-            kinetic.updateSpeed = true;
             kinetic.setChanged();
         }
 

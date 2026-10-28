@@ -35,13 +35,18 @@ public abstract class KineticBlockEntityMixin {
         if (tag.contains("Source", CompoundTag.TAG_COMPOUND)) {
             BlockPos source = NbtUtils.readBlockPos(tag.getCompound("Source"));
             if (source != null) {
-                self.setSource(source);
+                // Set the field directly. setSource() may call removeSource() while
+                // the source block has not been placed yet, which would immediately
+                // turn the restored speed back to zero.
+                self.source = source;
             }
         }
         if (tag.contains("Network", CompoundTag.TAG_COMPOUND)) {
             CompoundTag network = tag.getCompound("Network");
             if (network.contains("Id", CompoundTag.TAG_LONG)) {
-                self.setNetwork(network.getLong("Id"));
+                // Do not build/remove a network here; Kinetics post-restore does it
+                // after every block entity is present.
+                self.network = network.getLong("Id");
             }
         }
     }

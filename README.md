@@ -22,7 +22,7 @@ MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区�
 ## 安装
 
 1. 安装核心模组 `minigameplayground-2.2.1.jar`。
-2. 安装本附属模组 `minigameplayground-create-1.3.1.jar`。
+2. 安装本附属模组 `minigameplayground-create-1.3.2.jar`。
 3. 从旧版升级时，先移除旧的 `pvpbalance-create-*.jar`。
 4. 服务端安装 Create 6.0.8+。
 5. 启动服务器。
@@ -160,7 +160,7 @@ cd ../minigameplayground-create
 产物：
 
 ```text
-build/libs/minigameplayground-create-1.3.1.jar
+build/libs/minigameplayground-create-1.3.2.jar
 ```
 
 本附属模组的编译依赖：
