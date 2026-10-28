@@ -22,7 +22,7 @@
     "fabric-api": ">=0.92.0",
     "minecraft": "1.20.1",
     "java": ">=17",
-    "minigameplayground": ">=2.2.1",
+    "minigameplayground": ">=2.2.2",
     "create": ">=6.0.8"
   }
 }
