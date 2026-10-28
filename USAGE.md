@@ -109,6 +109,10 @@ void minigameplayground$clearContents();
 方块注册进内存中的 `KineticNetwork`，重新计算应力/容量并刷新网络，避免只恢复部分
 方块的转速而导致同一传动网络中的组件停止。
 
+它不会调用 `attachKinetics` 或设置 `updateSpeed`。这样在“整条应力机构从源到应用端
+全部被破坏再恢复”时，不会在方块尚未全部就位、速度尚未统一时触发 Create 的冲突
+传播；Create 的冲突检查会调用 `destroyBlock`，表现为组件在恢复瞬间断裂。
+
 ### 5. Create 实体快照
 
 附属在初始化时调用：

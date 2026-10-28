@@ -102,6 +102,11 @@ Create 的 `KineticBlock.updateIndirectNeighbourShapes` 会在方块放置时调
 方块注册到内存中的 `KineticNetwork`，并刷新应力/容量和客户端数据。这样不会只恢复
 单个方块的 `Speed`，而是恢复整条传动网络的运行状态。
 
+`KineticRestore` 不调用 `attachKinetics`/`updateSpeed`；完整网络破坏后再恢复时，
+避免在方块尚未全部就位、速度尚未一致时触发 Create 的冲突传播逻辑。如果触发
+`RotationPropagator` 的速度冲突检查，Create 会直接 `destroyBlock`，表现为应力组件
+在恢复瞬间断裂。
+
 ### Create 实体快照
 
 本附属向核心注册 `ZoneSnapshotExtension`（ID：`create`），因此核心不需要在编译期或
