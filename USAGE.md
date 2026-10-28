@@ -93,7 +93,18 @@ void minigameplayground$clearContents();
 
 清除后 `addBlocksToWorld` 被取消，不会放置方块，也不会生成方块掉落物。
 
-### 4. 实体销毁保护
+### 4. 快照恢复时的 Create 动能状态
+
+`KineticBlockMixin` 拦截 `KineticBlock.updateIndirectNeighbourShapes`：
+
+- 平时不改变 Create 行为；
+- 核心模组的 `ZoneSnapshots.restore` 在 `RestoreContext` 中标记“正在恢复”；
+- 恢复期间跳过 `warnOfMovement` / `clearKineticInformation` 路径；
+- 快照中的 `Speed`、`Source`、`Network` 等 BlockEntity NBT 正常写回。
+
+这修复了 `/mgp reset` 后传送带停止、创造电机应力输出不再转动的问题。
+
+### 5. 实体销毁保护
 
 `AbstractContraptionEntityMixin` 注入 `Entity.remove(RemovalReason)`：
 
@@ -139,4 +150,5 @@ modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
 - 区域内拆卸：正常放置。
 - 多区域相交：无条件清除。
 - 区域外实体销毁：清空 Contraption。
+- 含创造电机、传动杆、齿轮的区域快照在 `/mgp reset` 后保持转速 16、Source 和 Network 数据。
 - 核心与附属模组同时安装时服务端正常启动。

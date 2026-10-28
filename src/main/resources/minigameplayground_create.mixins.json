@@ -6,7 +6,8 @@
   "refmap": "minigameplayground_create.refmap.json",
   "mixins": [
     "ContraptionMixin",
-    "AbstractContraptionEntityMixin"
+    "AbstractContraptionEntityMixin",
+    "KineticBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

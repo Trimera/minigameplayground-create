@@ -87,6 +87,16 @@ MiniGamePlaygroundLocalBounds
 - 将 `Contraption.disassembled` 设为 `true`；
 - 不生成带内容物的可用矿车 Contraption 物品。
 
+### 快照重置与 Create 动能状态
+
+Create 的 `KineticBlock.updateIndirectNeighbourShapes` 会在方块放置时调用
+`clearKineticInformation()`，清空速度、网络和应力。WorldEdit 粘贴时也会触发这个
+钩子，导致 `/mgp reset` 后电机、传动杆、齿轮和传送带速度为 0。
+
+本附属模组在核心模组执行快照恢复期间检查 `RestoreContext.isRestoring()`，
+在 `KineticBlockMixin` 中跳过这次破坏性的动能清理，让快照中的
+`Speed`、`Source` 和 `Network` NBT 正常写回。恢复后传动方向、转速和应力状态保留。
+
 ### 实体销毁
 
 受保护 Contraption 实体如果在区域外被直接销毁（例如矿车 Contraption），
@@ -150,4 +160,5 @@ build/libs/minigameplayground-create-1.0.0.jar
 - 受保护 Contraption 在区域内拆卸时正常放置。
 - 与多个区域相交的 Contraption，即使最终位置在其中一个区域内，拆卸时仍整体清除。
 - 区域外直接销毁受保护 Contraption 实体时，方块被清空。
+- 含创造电机、传动杆、齿轮的区域快照在 `/mgp reset` 后保持 `Speed=16`、`Source` 和 `Network`，传送带不再停转。
 - 核心模组单独安装时不加载 Create Mixin；两个模组同时安装时正常启动。
