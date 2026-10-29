@@ -6,6 +6,7 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.transmission.sequencer.SequencedGearshiftBlockEntity;
 import com.simibubi.create.content.redstone.link.LinkBehaviour;
 import com.simibubi.create.content.redstone.link.RedstoneLinkBlockEntity;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -114,6 +115,11 @@ final class KineticRestore {
                 }
             } else if (blockEntity instanceof RedstoneLinkBlockEntity redstoneLink) {
                 restoreRedstoneLink(redstoneLink);
+            } else {
+                FluidRestore.restore(level, pos, blockEntity);
+                if (blockEntity instanceof SmartBlockEntity smartBlockEntity) {
+                    LogisticsRestore.restore(smartBlockEntity);
+                }
             }
         }
 

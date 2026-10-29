@@ -21,7 +21,7 @@ minigameplayground-create
 服务端需要：
 
 - `minigameplayground-2.2.3.jar`
-- `minigameplayground-create-1.3.5.jar`
+- `minigameplayground-create-1.3.6.jar`
 - Create 6.0.8+
 - 核心模组要求的 Fabric API、Fabric Loader、WorldEdit
 
@@ -180,5 +180,7 @@ modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
 - 区域外实体销毁：清空 Contraption。
 - 含创造电机、传动杆、齿轮、飞轮的区域快照在 `/mgp reset` 后保持转速 16、Source 和 Network 数据。
 - Redstone Link 接收模式恢复后重新加入红石网络；可编程齿轮箱恢复后重新计算指令时序。
+- 物流链接重新注册，流体管道重建网络。
+- **列车不恢复**：轨道方块可恢复，但列车/车厢实体和全局 Railway 数据不恢复；旧快照中的车厢会被清理。
 - 核心与附属模组同时安装时服务端正常启动。
 - 实体快照扩展已注册；普通实体和玩家乘客安全逻辑由核心测试覆盖。
