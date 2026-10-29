@@ -3,6 +3,9 @@ package com.minigameplayground.create;
 import com.minigameplayground.zone.PlaygroundZone;
 import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.transmission.sequencer.SequencedGearshiftBlockEntity;
+import com.simibubi.create.content.redstone.link.LinkBehaviour;
+import com.simibubi.create.content.redstone.link.RedstoneLinkBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -73,6 +76,16 @@ final class KineticRestore {
             network.sync();
         }
 
+        // Re-evaluate the programmable gearshift's instruction timing against the
+        // restored speed. Its sequence NBT is restored separately from the kinetic
+        // fields, so this keeps the gearbox in the same operating state as the
+        // snapshot instead of leaving it in an idle/zero-timing state.
+        for (KineticBlockEntity kinetic : kinetics) {
+            if (kinetic instanceof SequencedGearshiftBlockEntity gearshift) {
+                gearshift.onSpeedChanged(gearshift.getTheoreticalSpeed());
+            }
+        }
+
         // Push the repaired speed/stress state to clients. Block entity NBT is
         // normally included in the block update, but an explicit notify is useful
         // after a bulk schematic paste.
@@ -99,6 +112,8 @@ final class KineticRestore {
                 if (kinetic.source != null) {
                     extraPositions.add(kinetic.source.immutable());
                 }
+            } else if (blockEntity instanceof RedstoneLinkBlockEntity redstoneLink) {
+                restoreRedstoneLink(redstoneLink);
             }
         }
 
@@ -112,5 +127,19 @@ final class KineticRestore {
             }
         }
         return result;
+    }
+
+    private static void restoreRedstoneLink(RedstoneLinkBlockEntity link) {
+        LinkBehaviour behaviour = link.getBehaviour(LinkBehaviour.TYPE);
+        if (behaviour == null) {
+            return;
+        }
+        // LinkBehaviour.read() sets newPosition=false when LastKnownPosition equals
+        // the current position. Recycled blocks at the same position then ignore
+        // setReceivedStrength(). Re-initialize the link so it rejoins the redstone
+        // network and can receive again.
+        behaviour.newPosition = true;
+        behaviour.initialize();
+        behaviour.notifySignalChange();
     }
 }

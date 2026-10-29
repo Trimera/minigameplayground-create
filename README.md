@@ -22,7 +22,7 @@ MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区�
 ## 安装
 
 1. 安装核心模组 `minigameplayground-2.2.3.jar`。
-2. 安装本附属模组 `minigameplayground-create-1.3.4.jar`。
+2. 安装本附属模组 `minigameplayground-create-1.3.5.jar`。
 3. 从旧版升级时，先移除旧的 `pvpbalance-create-*.jar`。
 4. 服务端安装 Create 6.0.8+。
 5. 启动服务器。
@@ -165,7 +165,7 @@ cd ../minigameplayground-create
 产物：
 
 ```text
-build/libs/minigameplayground-create-1.3.4.jar
+build/libs/minigameplayground-create-1.3.5.jar
 ```
 
 本附属模组的编译依赖：
@@ -187,4 +187,6 @@ build/libs/minigameplayground-create-1.3.4.jar
 - 与多个区域相交的 Contraption，即使最终位置在其中一个区域内，拆卸时仍整体清除。
 - 区域外直接销毁受保护 Contraption 实体时，方块被清空。
 - 含创造电机、传动杆、齿轮、飞轮的区域快照在 `/mgp reset` 后保持 `Speed=16`、`Source` 和 `Network`；重置后的网络 Size、Capacity 和应力状态正确。
+- Redstone Link 接收模式在恢复后会重新加入远程红石网络，不再因为 `LastKnownPosition` 相同而忽略接收信号。
+- 可编程齿轮箱恢复后会按快照速度和指令状态重新计算运行时序。
 - 核心模组单独安装时不加载 Create Mixin；两个模组同时安装时正常启动。
