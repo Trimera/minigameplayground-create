@@ -36,6 +36,7 @@ final class KineticRestore {
     }
 
     static void rebuild(ServerLevel level, PlaygroundZone zone) {
+        KineticSnapshot.apply(level, zone);
         List<KineticBlockEntity> kinetics = collect(level, zone);
         if (kinetics.isEmpty()) {
             return;
@@ -82,18 +83,19 @@ final class KineticRestore {
         // restored speed. Its sequence NBT is restored separately from the kinetic
         // fields, so this keeps the gearbox in the same operating state as the
         // snapshot instead of leaving it in an idle/zero-timing state.
+        // A restored non-generator kinetic block must know which block is its
+        // source. If the saved Source tag was lost, derive it from the rebuilt
+        // network before calculating the shaft/render side.
+        for (KineticBlockEntity kinetic : kinetics) {
+            repairSource(kinetic);
+        }
+
         for (KineticBlockEntity kinetic : kinetics) {
             if (kinetic instanceof SequencedGearshiftBlockEntity gearshift) {
                 // A restored gearshift may have lost its Source position even
                 // though it is still a member of a valid kinetic network. Without
                 // Source, getRotationSpeedModifier() treats the source-side shaft
                 // as the output side and it appears disconnected/stopped.
-                if (gearshift.source == null) {
-                    KineticNetwork network = gearshift.getOrCreateNetwork();
-                    if (network != null && !network.sources.isEmpty()) {
-                        gearshift.source = network.sources.keySet().iterator().next().getBlockPos();
-                    }
-                }
                 gearshift.onSpeedChanged(gearshift.getTheoreticalSpeed());
                 boolean powered = level.hasNeighborSignal(gearshift.getBlockPos());
                 boolean active = gearshift.getBlockState()
@@ -148,6 +150,17 @@ final class KineticRestore {
             }
         }
         return result;
+    }
+
+    private static void repairSource(KineticBlockEntity kinetic) {
+        if (kinetic.source != null || kinetic.isSource()) {
+            return;
+        }
+        KineticNetwork network = kinetic.getOrCreateNetwork();
+        if (network == null || network.sources.isEmpty()) {
+            return;
+        }
+        kinetic.source = network.sources.keySet().iterator().next().getBlockPos();
     }
 
     private static void restoreRedstoneLink(RedstoneLinkBlockEntity link) {

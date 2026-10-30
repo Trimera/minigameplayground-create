@@ -1,8 +1,10 @@
 package com.minigameplayground.create.mixin;
 
 import com.minigameplayground.RestoreContext;
+import com.minigameplayground.zone.ZoneManager;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +26,15 @@ public abstract class KineticBlockMixin {
     @Inject(method = "updateIndirectNeighbourShapes", at = @At("HEAD"), cancellable = true)
     private void minigameplayground$preserveKineticStateDuringRestore(
             BlockState state, LevelAccessor level, BlockPos pos, int flags, int count, CallbackInfo ci) {
-        if (RestoreContext.isRestoring()) {
-            ci.cancel();
+        if (!RestoreContext.isRestoring()) {
+            return;
         }
+        // Only suppress this inside a playground zone. A reset must not change how
+        // kinetic blocks placed elsewhere in the world initialize themselves.
+        if (level instanceof Level serverLevel
+                && !ZoneManager.isInAnyPlaygroundZone(serverLevel, pos)) {
+            return;
+        }
+        ci.cancel();
     }
 }

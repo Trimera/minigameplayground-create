@@ -3,7 +3,7 @@
 MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区域提供 Contraption 防复制保护和 Create 实体快照支持。
 
 - 服务端模组，客户端不需要安装。
-- 依赖核心模组 `minigameplayground` 2.2.3+。
+- 依赖核心模组 `minigameplayground` 2.2.4+。
 - 依赖 Create 6.0.8+。
 - 不添加指令、方块、物品或配置；区域数据全部来自核心模组。
 
@@ -15,14 +15,14 @@ MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区�
 | Fabric Loader | 0.18.4 |
 | Fabric API | 0.92.6+1.20.1 |
 | Java | 17+ |
-| MiniGamePlayground Core | 2.2.3+ |
+| MiniGamePlayground Core | 2.2.4+ |
 | Create | 6.0.8+ |
 | WorldEdit | 核心模组要求，7.2.15+ |
 
 ## 安装
 
-1. 安装核心模组 `minigameplayground-2.2.3.jar`。
-2. 安装本附属模组 `minigameplayground-create-1.3.7.jar`。
+1. 安装核心模组 `minigameplayground-2.2.4.jar`。
+2. 安装本附属模组 `minigameplayground-create-1.3.8.jar`。
 3. 从旧版升级时，先移除旧的 `pvpbalance-create-*.jar`。
 4. 服务端安装 Create 6.0.8+。
 5. 启动服务器。
@@ -165,13 +165,13 @@ cd ../minigameplayground-create
 产物：
 
 ```text
-build/libs/minigameplayground-create-1.3.7.jar
+build/libs/minigameplayground-create-1.3.8.jar
 ```
 
 本附属模组的编译依赖：
 
 - 核心模组的开发 jar：
-  `../minigameplayground-core/build/devlibs/minigameplayground-2.2.3-dev.jar`
+  `../minigameplayground-core/build/devlibs/minigameplayground-2.2.4-dev.jar`
 - 本机 Maven 仓库中的 Create 开发包：
   `com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1`
 
@@ -188,7 +188,8 @@ build/libs/minigameplayground-create-1.3.7.jar
 - 区域外直接销毁受保护 Contraption 实体时，方块被清空。
 - 含创造电机、传动杆、齿轮、飞轮的区域快照在 `/mgp reset` 后保持 `Speed=16`、`Source` 和 `Network`；重置后的网络 Size、Capacity 和应力状态正确。
 - Redstone Link 接收模式在恢复后会重新加入远程红石网络，不再因为 `LastKnownPosition` 相同而忽略接收信号。
-- 可编程齿轮箱恢复后会重新绑定 `Source`、按快照速度和指令状态重新计算运行时序，并重放当前红石输入状态。
+- 可编程齿轮箱恢复后会重新绑定 `Source`、按快照速度和指令状态重新计算运行时序，并重放当前红石输入状态；该逻辑从快照 schematic 读取，旧快照同样生效。
+- Redstone Link 在读取 NBT 前会先创建 `LinkBehaviour`，避免 WorldEdit 在行为未初始化时读取导致空指针。
 - 物流链接会重新执行全局注册；流体管道会重建临时 `FluidNetwork`。
 - **列车不参与快照恢复**：轨道方块可以恢复，但列车、车厢实体、`RailwaySavedData` 中的 Train/TrackGraph 不恢复；旧快照中的车厢实体也会在恢复后被清理。
 - 核心模组单独安装时不加载 Create Mixin；两个模组同时安装时正常启动。

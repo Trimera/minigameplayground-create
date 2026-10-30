@@ -27,7 +27,6 @@ public abstract class KineticBlockEntityMixin {
         if (!RestoreContext.isRestoring()) {
             return;
         }
-
         KineticBlockEntity self = (KineticBlockEntity) (Object) this;
         if (tag.contains("Speed")) {
             self.setSpeed(tag.getFloat("Speed"));

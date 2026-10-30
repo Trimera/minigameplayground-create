@@ -20,8 +20,8 @@ minigameplayground-create
 
 服务端需要：
 
-- `minigameplayground-2.2.3.jar`
-- `minigameplayground-create-1.3.7.jar`
+- `minigameplayground-2.2.4.jar`
+- `minigameplayground-create-1.3.8.jar`
 - Create 6.0.8+
 - 核心模组要求的 Fabric API、Fabric Loader、WorldEdit
 
@@ -101,6 +101,7 @@ void minigameplayground$clearContents();
 - 核心模组的 `ZoneSnapshots.restore` 在 `RestoreContext` 中标记“正在恢复”；
 - 恢复期间跳过 `warnOfMovement` / `clearKineticInformation` 路径；
 - 快照中的 `Speed`、`Source`、`Network` 等 BlockEntity NBT 正常写回。
+- 恢复后还会从快照 schematic 重新读取并应用动能字段；即使 WorldEdit 复用旧方块实体或跳过 NBT 读取，也不会丢失转速和 `Source`。旧快照无需重新生成。
 
 这修复了 `/mgp reset` 后传送带停止、创造电机应力输出不再转动的问题。
 
@@ -145,7 +146,7 @@ ZoneSnapshots.registerExtension(new CreateSnapshotExtension());
 - 使用局部 AABB，旋转/镜像后可能偏保守。
 - 旧版 Contraption 物品没有保护字段，按未保护处理。
 - 本模组不提供独立指令和配置，所有区域信息来自核心模组。
-- Create 实体快照依赖核心 2.2.3+ 的 `ZoneSnapshotExtension` API。
+- Create 实体快照依赖核心 2.2.4+ 的 `ZoneSnapshotExtension` API。
 - `/mgp reset` 不负责阻止复制。
 
 ## 构建顺序
@@ -179,8 +180,8 @@ modCompileOnly "com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1"
 - 多区域相交：无条件清除。
 - 区域外实体销毁：清空 Contraption。
 - 含创造电机、传动杆、齿轮、飞轮的区域快照在 `/mgp reset` 后保持转速 16、Source 和 Network 数据。
-- Redstone Link 接收模式恢复后重新加入红石网络；可编程齿轮箱恢复后重新绑定 Source、重新计算指令时序并重放红石状态。
-- 物流链接重新注册，流体管道重建网络。
+- Redstone Link 接收模式恢复后重新加入红石网络；可编程齿轮箱恢复后从快照重新绑定 Source、重新计算指令时序并重放红石状态。
+- Redstone Link 恢复时先创建 `LinkBehaviour` 再读取 NBT，避免空指针；物流链接重新注册，流体管道重建网络。
 - **列车不恢复**：轨道方块可恢复，但列车/车厢实体和全局 Railway 数据不恢复；旧快照中的车厢会被清理。
 - 核心与附属模组同时安装时服务端正常启动。
 - 实体快照扩展已注册；普通实体和玩家乘客安全逻辑由核心测试覆盖。

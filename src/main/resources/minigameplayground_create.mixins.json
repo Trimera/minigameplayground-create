@@ -8,7 +8,8 @@
     "ContraptionMixin",
     "AbstractContraptionEntityMixin",
     "KineticBlockMixin",
-    "KineticBlockEntityMixin"
+    "KineticBlockEntityMixin",
+    "RedstoneLinkBlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
