@@ -3,6 +3,7 @@ package com.minigameplayground.create;
 import com.minigameplayground.zone.PlaygroundZone;
 import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.transmission.sequencer.SequencedGearshiftBlock;
 import com.simibubi.create.content.kinetics.transmission.sequencer.SequencedGearshiftBlockEntity;
 import com.simibubi.create.content.redstone.link.LinkBehaviour;
 import com.simibubi.create.content.redstone.link.RedstoneLinkBlockEntity;
@@ -83,7 +84,21 @@ final class KineticRestore {
         // snapshot instead of leaving it in an idle/zero-timing state.
         for (KineticBlockEntity kinetic : kinetics) {
             if (kinetic instanceof SequencedGearshiftBlockEntity gearshift) {
+                // A restored gearshift may have lost its Source position even
+                // though it is still a member of a valid kinetic network. Without
+                // Source, getRotationSpeedModifier() treats the source-side shaft
+                // as the output side and it appears disconnected/stopped.
+                if (gearshift.source == null) {
+                    KineticNetwork network = gearshift.getOrCreateNetwork();
+                    if (network != null && !network.sources.isEmpty()) {
+                        gearshift.source = network.sources.keySet().iterator().next().getBlockPos();
+                    }
+                }
                 gearshift.onSpeedChanged(gearshift.getTheoreticalSpeed());
+                boolean powered = level.hasNeighborSignal(gearshift.getBlockPos());
+                boolean active = gearshift.getBlockState()
+                        .getValue(SequencedGearshiftBlock.STATE) != 0;
+                gearshift.onRedstoneUpdate(powered, active);
             }
         }
 
