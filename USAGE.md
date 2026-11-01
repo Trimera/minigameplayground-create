@@ -20,8 +20,8 @@ minigameplayground-create
 
 服务端需要：
 
-- `minigameplayground-2.2.5.jar`
-- `minigameplayground-create-1.3.9.jar`
+- `minigameplayground-2.2.6.jar`
+- `minigameplayground-create-1.3.10.jar`
 - Create 6.0.8+
 - 核心模组要求的 Fabric API、Fabric Loader、WorldEdit
 
@@ -146,7 +146,7 @@ ZoneSnapshots.registerExtension(new CreateSnapshotExtension());
 - 使用局部 AABB，旋转/镜像后可能偏保守。
 - 旧版 Contraption 物品没有保护字段，按未保护处理。
 - 本模组不提供独立指令和配置，所有区域信息来自核心模组。
-- Create 实体快照依赖核心 2.2.5+ 的 `ZoneSnapshotExtension` API。
+- Create 实体快照依赖核心 2.2.6+ 的 `ZoneSnapshotExtension` API。
 - `/mgp reset` 不负责阻止复制。
 
 ## 构建顺序
