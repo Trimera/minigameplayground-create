@@ -3,7 +3,7 @@
 MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区域提供 Contraption 防复制保护和 Create 实体快照支持。
 
 - 服务端模组，客户端不需要安装。
-- 依赖核心模组 `minigameplayground` 2.3.3+。
+- 依赖核心模组 `minigameplayground` 2.3.4+。
 - 依赖 Create 6.0.8+。
 - 不添加指令、方块、物品或配置；区域数据全部来自核心模组。
 
@@ -15,14 +15,14 @@ MiniGamePlayground 的 Create 兼容附属模组，为核心模组的游戏区�
 | Fabric Loader | 0.18.4 |
 | Fabric API | 0.92.6+1.20.1 |
 | Java | 17+ |
-| MiniGamePlayground Core | 2.3.3+ |
+| MiniGamePlayground Core | 2.3.4+ |
 | Create | 6.0.8+ |
 | WorldEdit | 核心模组要求，7.2.15+ |
 
 ## 安装
 
-1. 安装核心模组 `minigameplayground-2.3.3.jar`。
-2. 安装本附属模组 `minigameplayground-create-1.3.13.jar`。
+1. 安装核心模组 `minigameplayground-2.3.4.jar`。
+2. 安装本附属模组 `minigameplayground-create-1.3.14.jar`。
 3. 从旧版升级时，先移除旧的 `pvpbalance-create-*.jar`。
 4. 服务端安装 Create 6.0.8+。
 5. 启动服务器。
@@ -165,13 +165,13 @@ cd ../minigameplayground-create
 产物：
 
 ```text
-build/libs/minigameplayground-create-1.3.13.jar
+build/libs/minigameplayground-create-1.3.14.jar
 ```
 
 本附属模组的编译依赖：
 
 - 核心模组的开发 jar：
-  `../minigameplayground-core/build/devlibs/minigameplayground-2.3.3-dev.jar`
+  `../minigameplayground-core/build/devlibs/minigameplayground-2.3.4-dev.jar`
 - 本机 Maven 仓库中的 Create 开发包：
   `com.simibubi.create:create-fabric:6.0.8.1+local-mc1.20.1`
 
