@@ -193,3 +193,7 @@ build/libs/minigameplayground-create-1.3.15.jar
 - 物流链接会重新执行全局注册；流体管道会重建临时 `FluidNetwork`。
 - **列车不参与快照恢复**：轨道方块可以恢复，但列车、车厢实体、`RailwaySavedData` 中的 Train/TrackGraph 不恢复；旧快照中的车厢实体也会在恢复后被清理。
 - 核心模组单独安装时不加载 Create Mixin；两个模组同时安装时正常启动。
+
+## License
+
+MIT. See [LICENSE](LICENSE).
